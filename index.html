@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI Chat — Gemini</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <button onclick="window.location.href='chat.html'">+ New Chat</button>
+    <h3>History</h3>
+    <div class="chat-list">
+      <div class="item"> 🕑 Yesterday’s Chat</div>
+      <div class="item"> 📒 Study Notes</div>
+      <div class="item"> 💡 Project Ideas</div>
+      <div class="item"> 🔍 Search Chat</div>
+      <div class="item"> 📚 Library</div>
+    </div>
+  </aside>
+
+  <!-- Main App -->
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">AI Chat <span class="muted">+ Gemini</span></div>
+      <!-- ⭐ Starter ko replace karke logout button -->
+      <button id="logout-btn" class="logout">Logout</button>
+    </header>
+
+    <main id="chat" class="chat"></main>
+
+    <form id="composer" class="composer">
+      <textarea id="input" rows="1" placeholder="Ask anything..." autofocus></textarea>
+      <button id="send" type="submit">Send</button>
+    </form>
+  </div>
+  
+  <template id="msg">
+    <div class="msg">
+      <div class="avatar"></div>
+      <div class="bubble"></div>
+    </div>
+  </template>
+
+  <script src="./app.js"></script>
+  <script>
+    // Logout button → redirect to login.html
+    document.getElementById("logout-btn").addEventListener("click", () => {
+      // Optional: clear session/localStorage if you store user info
+      window.location.href = "login.html";
+    });
+  </script>
+</body>
+</html>
