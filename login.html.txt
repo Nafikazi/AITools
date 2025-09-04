@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Chat — Login</title>
+  <link rel="stylesheet" href="auth.css">
+</head>
+<body>
+
+  <!-- Background Animated Circles -->
+  <div class="bg-circle circle1"></div>
+  <div class="bg-circle circle2"></div>
+  <div class="bg-circle circle3"></div>
+
+  <div class="auth-container">
+
+    <!-- Welcome Side -->
+    <div class="welcome-text">
+      <span>Welcome Back 👋</span>  
+      <br>
+      <h4 ="made-by">Made with ❤️ by <span>Nafey Sir</span></h4>
+
+    </div>
+
+    <!-- Login Card -->
+    <div class="auth-card">
+      <div class="logo">AI Chat</div>
+      <h2>Login</h2>
+      <p>Login to your account</p>
+
+      <input type="email" id="login-email" placeholder="Enter your email" />
+      <input type="password" id="login-password" placeholder="Enter your password" />
+
+      <button id="login-btn">Login</button>
+      <p class="message" id="login-message"></p>
+
+      <p class="toggle-text">Don't have an account? <a href="signup.html">Signup here</a></p>
+    </div>
+  </div>
+<script>
+  const btn = document.getElementById("login-btn");
+  btn.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    const email = document.getElementById("login-email").value.trim();
+    const pass = document.getElementById("login-password").value.trim();
+    const msg = document.getElementById("login-message");
+
+    if (!email || !pass) {
+      msg.innerText = "❌ Please fill all fields";
+      msg.style.color = "red";
+      return;
+    }
+
+    // Get users from storage
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+
+    // Find matching user
+    const user = users.find(u => u.email === email && u.pass === pass);
+
+    if (!user) {
+      msg.innerText = "❌ Invalid Email or Password";
+      msg.style.color = "red";
+      return;
+    }
+
+    // Save session
+    localStorage.setItem("loggedInUser", JSON.stringify(user));
+
+    msg.innerText = "✅ Successful Login! Redirecting...";
+    msg.style.color = "limegreen";
+
+    setTimeout(() => {
+      window.location.href = "index.html";
+    }, 2000);
+  });
+</script>

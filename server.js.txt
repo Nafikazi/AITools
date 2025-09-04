@@ -1,0 +1,57 @@
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
+dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+app.use(express.static(path.join(__dirname, "public")));
+
+const API_KEY = process.env.GOOGLE_API_KEY;
+if (!API_KEY) {
+  console.warn("⚠️ GOOGLE_API_KEY not set in .env file");
+}
+const genAI = new GoogleGenerativeAI(API_KEY);
+const MODEL_NAME = "gemini-1.5-flash";
+
+// --- Chat API ---
+app.post("/api/chat", async (req, res) => {
+  try {
+    const { history = [], input = "" } = req.body || {};
+
+    const geminiHistory = history.map(m => ({
+      role: m.role === "assistant" ? "model" : "user",
+      parts: [{ text: String(m.content || "") }],
+    }));
+
+    const model = genAI.getGenerativeModel({ model: MODEL_NAME });
+    const chat = model.startChat({ history: geminiHistory });
+
+    const result = await chat.sendMessage(String(input || ""));
+    const response = await result.response;
+    const text = response.text();
+
+    res.json({ ok: true, reply: text });
+  } catch (err) {
+    console.error("❌ Chat error:", err);
+    res.status(500).json({ ok: false, error: err.message || "Server error" });
+  }
+});
+
+// --- Root page ---
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`✅ Server running at http://localhost:${PORT}`);
+});
